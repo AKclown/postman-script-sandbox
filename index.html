@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- https://www.cdnpkg.com/crypto-js/file/crypto-js.min.js/ -->
+    <script src="./crypto-js.min.js"></script>
+    <style>
+      .layout {
+        display: flex;
+        margin-top: 10px;
+      }
+
+      #component_one,
+      #component_two,
+      #component_three {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #component_one_input,
+      #component_one_output,
+      #component_two_input,
+      #component_two_output,
+      #component_three_input,
+      #component_three_output {
+        width: 300px;
+        height: 300px;
+      }
+      button {
+        height: 50px;
+        background-color: rgb(23, 78, 166, 0.2);
+        border: 1px solid rgb(23, 78, 166, 0.6);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="main_test">主应用测试</button>
+
+    <div class="layout">
+      <div id="component_one">
+        <button id="component_one_btn">组件一</button>
+        <textarea id="component_one_input"></textarea>
+        <textarea id="component_one_output"></textarea>
+      </div>
+      <div id="component_two">
+        <button id="component_two_btn">组件二</button>
+        <textarea id="component_two_input"></textarea>
+        <textarea id="component_two_output"></textarea>
+      </div>
+      <div id="component_three">
+        <button id="component_three_btn">组件三</button>
+        <textarea id="component_three_input"></textarea>
+        <textarea id="component_three_output"></textarea>
+      </div>
+    </div>
+
+    <script type="module" src="./index.js"></script>
+    <script></script>
+  </body>
+</html>

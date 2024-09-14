@@ -1,0 +1,103 @@
+var appKey = "26072923";//需要根据现场情况修改
+var appSecret = "CNjg0ETuPmg3s6Mxn8NY"; //需要根据现场情况修改
+
+var md5 = calcMd5();
+var date = new Date().toString();
+var nonce = createUuid();
+var timestamp = new Date().getTime();
+
+var textToSign = "";
+textToSign += pm.request.method + "\n";
+textToSign += pm.request.headers["accept"] + "\n";
+textToSign += pm.request.headers["content-type"] + "\n";
+
+var headers = headersToSign();
+var signatureHeaders;
+var sortedKeys = Array.from(headers.keys()).sort();
+for (var headerName of sortedKeys) {
+    textToSign += headerName + ":" + headers.get(headerName) + "\n";
+    signatureHeaders = signatureHeaders ? signatureHeaders + "," + headerName : headerName;
+}
+textToSign += urlToSign();
+// console.log("textToSign\n" + textToSign.replace(/\n/g, "#"));
+var hash = CryptoJS.HmacSHA256(textToSign, appSecret);
+// console.log("hash:" + hash);
+var signature = hash.toString(CryptoJS.enc.Base64);
+// console.log("signature:" + signature)
+pm.variables.set('AppKey', appKey);
+pm.variables.set('Md5', md5);
+pm.variables.set("Date", new Date().toString());
+pm.variables.set("Signature", signature);
+pm.variables.set("SignatureHeaders", signatureHeaders);
+pm.variables.set("Nonce", nonce);
+pm.variables.set("Timestamp", timestamp);
+function headersToSign() {
+    var headers = new Map();
+    for (var name in pm.request.headers) {
+        console.log('name: ', name);
+        name = name.toLowerCase();
+        if (!name.startsWith('x-ca-')) {
+            continue;
+        } if (name === "x-ca-signature" || name === "x-ca-signature-headers" || name == "x-ca-key" || name === 'x-ca-nonce') {
+            continue;
+        }
+        var value = pm.request.headers[name];
+        headers.set(name, value);
+    }
+    headers.set('x-ca-key', appKey);
+    headers.set('x-ca-timestamp', timestamp);
+    // console.log("headers: " + headers.size);
+    for (var key in headers) {
+        // console.log("key:" + key + "value:" + headers[key]);
+    }
+    return headers;
+}
+function urlToSign() {
+    var params = new Map();
+    var contentType = pm.request.headers["content-type"];
+    if (contentType && contentType.startsWith('application/x-www-form-urlencoded')) {
+        const formParams = pm.request.data.split("&");
+        formParams.forEach((p) => {
+            const ss = p.split('=');
+            params.set(ss[0], ss[1]);
+        })
+    }
+    const ss = pm.request.url.split('?');
+    // console.log('pm.request.url', pm.request.url)
+    if (ss.length > 1 && ss[1]) {
+        const queryParams = ss[1].split('&');
+        queryParams.forEach((p) => {
+            const ss = p.split('=');
+            params.set(ss[0], ss[1]);
+        })
+    }
+    var sortedKeys = Array.from(params.keys())
+    sortedKeys.sort();
+    var l1 = ss[0].indexOf('/', 10);
+    var url = ss[0].substring(l1);
+    var first = true; var qs
+    for (var k of sortedKeys) {
+        var s = k + "=" + params.get(k);
+        qs = qs ? qs + "&" + s : s;
+        // console.log("key=" + k + " value=" + params.get(k));
+    }
+    return qs ? url + "?" + qs : url;
+}
+function calcMd5() {
+    var contentType = pm.request.headers["content-type"];
+    if (pm.request.data && !contentType.startsWith('application/x-www-form-urlencoded')) {
+        var data = pm.request.data;
+        var md5 = CryptoJS.MD5(data);
+        var md5String = md5.toString(CryptoJS.enc.Base64);
+        // console.log("data:" + data + "\nmd5:" + md5String);
+        return md5String;
+    } else {
+        return "";
+    }
+}
+function createUuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
