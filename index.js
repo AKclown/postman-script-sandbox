@@ -5,34 +5,40 @@ window.pm = pm
 const oneDom = document.getElementById('component_one_btn')
 const oneInput = document.getElementById('component_one_input')
 const oneOutput = document.getElementById('component_one_output')
-oneDom.addEventListener('click', () => {
+oneDom.addEventListener('click', async () => {
     const inputText = oneInput.value
-    pm.createVariable('one')
-    pm.setVariableId('one')
-    pm.codeSandbox.execScript(inputText)
-    oneOutput.value = JSON.stringify(pm.variables.toObject())
+    const id = 'one'
+    pm.setVariableId(id)
+    await pm.execScriptInSandbox(id, inputText)
+    const data = pm.getVariables(id)
+    oneOutput.value = JSON.stringify(data)
+    pm.unSetVariableId(id)
 })
 
 const twoDom = document.getElementById('component_two_btn')
 const twoInput = document.getElementById('component_two_input')
 const twoOutput = document.getElementById('component_two_output')
-twoDom.addEventListener('click', () => {
+twoDom.addEventListener('click', async () => {
     const inputText = twoInput.value
-    pm.createVariable('two')
-    pm.setVariableId('two')
-    pm.codeSandbox.execScript(inputText)
-    twoOutput.value = JSON.stringify(pm.variables.toObject())
+    const id = 'two'
+    pm.setVariableId(id)
+    await pm.execScriptInSandbox(id, inputText)
+    const data = pm.getVariables(id)
+    twoOutput.value = JSON.stringify(data)
+    pm.unSetVariableId(id)
 })
 
 const threeDom = document.getElementById('component_three_btn')
 const threeInput = document.getElementById('component_three_input')
 const threeOutput = document.getElementById('component_three_output')
-threeDom.addEventListener('click', () => {
+threeDom.addEventListener('click', async () => {
     const inputText = threeInput.value
-    pm.createVariable('three')
-    pm.setVariableId('three')
-    pm.codeSandbox.execScript(inputText)
-    threeOutput.value = JSON.stringify(pm.variables.toObject())
+    const id = 'three'
+    pm.setVariableId(id)
+    await pm.execScriptInSandbox(id, inputText)
+    const data = pm.getVariables(id)
+    threeOutput.value = JSON.stringify(data)
+    pm.unSetVariableId(id)
 })
 
 

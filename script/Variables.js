@@ -33,4 +33,3 @@ export default class Variables {
         return { ...global, ...environment, ...variables }
     }
 }
-
