@@ -1,3 +1,9 @@
+
+// !!! 为什么不能使用yid作为执行脚本的唯一标识呢？
+// !!! 原因: 因为请求是异步的，在轮训中可能同一个组件这次的请求还未完成，就会去执行下一次组件的请求。这次请求完成之后我会清空相关请求以及沙箱数据
+// !!! 导致下一次请求时去获取 “相关请求以及沙箱数据” 会出现找不到的情况。（因为同一个组件yid是一致的）
+// 也可以通过优化轮训方法来避免上一次请求没有完成，就进入到下一次请求的情况
+
 import PM from './script/PM.js'
 const pm = new PM();
 window.pm = pm
@@ -7,7 +13,9 @@ const oneInput = document.getElementById('component_one_input')
 const oneOutput = document.getElementById('component_one_output')
 oneDom.addEventListener('click', async () => {
     const inputText = oneInput.value
-    const id = 'one'
+    const random = Math.random().toString(16).slice(2);
+    const yid = 'one';
+    const id = `${random}-${yid}`
     pm.setVariableId(id)
     await pm.execScriptInSandbox(id, inputText)
     const data = pm.getVariables(id)
@@ -20,7 +28,9 @@ const twoInput = document.getElementById('component_two_input')
 const twoOutput = document.getElementById('component_two_output')
 twoDom.addEventListener('click', async () => {
     const inputText = twoInput.value
-    const id = 'two'
+    const random = Math.random().toString(16).slice(2);
+    const yid = 'two';
+    const id = `${random}-${yid}`
     pm.setVariableId(id)
     await pm.execScriptInSandbox(id, inputText)
     const data = pm.getVariables(id)
@@ -33,7 +43,9 @@ const threeInput = document.getElementById('component_three_input')
 const threeOutput = document.getElementById('component_three_output')
 threeDom.addEventListener('click', async () => {
     const inputText = threeInput.value
-    const id = 'three'
+    const random = Math.random().toString(16).slice(2);
+    const yid = 'three';
+    const id = `${random}-${yid}`
     pm.setVariableId(id)
     await pm.execScriptInSandbox(id, inputText)
     const data = pm.getVariables(id)
